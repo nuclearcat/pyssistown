@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: devops/Dockerfile.server
+    ports:
+      - "8000:8000"
+  client:
+    build:
+      context: ..
+      dockerfile: devops/Dockerfile.client
+    ports:
+      - "5173:5173"
