@@ -1,14 +1,7 @@
-from pathlib import Path
-import sys
+from __future__ import annotations
 
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from server.app.main import app
-from fastapi.testclient import TestClient
-
-client = TestClient(app)
-
-def test_root() -> None:
+def test_root(client) -> None:
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}

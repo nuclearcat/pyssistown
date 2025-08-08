@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from hashlib import sha256
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
 from ..db import get_session
 from ..models import User, UserCreate, UserRead
+from ..security.auth import get_password_hash
 
 router = APIRouter(prefix="/users", tags=["users"])
-
-
-def hash_password(password: str) -> str:
-    return sha256(password.encode()).hexdigest()
 
 
 @router.post("/", response_model=UserRead)
@@ -19,7 +15,7 @@ def create_user(user: UserCreate, session: Session = Depends(get_session)) -> Us
     existing = session.exec(select(User).where(User.email == user.email)).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
-    db_user = User(email=user.email, password_hash=hash_password(user.password))
+    db_user = User(email=user.email, password_hash=get_password_hash(user.password))
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
