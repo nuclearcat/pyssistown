@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .ws import router as ws_router
-from .api import users
+from .api import users, auth
 from .db import init_db
 
 app = FastAPI()
@@ -26,4 +26,5 @@ async def read_root() -> dict[str, str]:
 
 
 app.include_router(users.router)
+app.include_router(auth.router)
 app.include_router(ws_router)
